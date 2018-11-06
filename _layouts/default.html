@@ -112,65 +112,60 @@
       }
     </style>
     
-    <h1>Investing on computers and tablets on whole Colombia, but with which distribution ? Where the investments have been the highest ?</h1>
+    <h1>Investments on computers and tablets on whole Colombia, but with which distribution ? Where the investments have been the highest and the lowest?</h1>
 
     <div id="wrapper">
 
       <div id = "svgcontainer1">
-        <h2>Investments in Colombian pesos, in each department and city</h2>
+        <h2>Investments (in Colombian pesos), in each department and city.</h2>
+        <p style="color:#789410;font-size:105%"; align="center">If no investments, the city is not represented.</p>
       </div>
 
        <div id = "explcontainer">
             <h2>What, why and how ? Understanding this visualization thanks to abstraction</h2>
               <p style="color:#111111;">
-                This visualization uses data from datos.gov.co The principal objective here is to show or discover some interesting insights about this data, knowing that the principal question here is:<br/><b>Could I know, thanks to the visualization, when should I book my time for applying to a training about open data ? When not? </b>
+                This visualization uses data from datos.gov.co The principal objective here is to show or discover some interesting insights about this data, knowing that the principal question here is:<br/><b>Could I know, the global distribution of the investments ? Could I know where the investments where the highest and the lowest?</b>
                 <br/><br/>
                 The other objetives are more academic: to use d3, to publish the web page on GithubPages etc. The technologies used are d3 (javascript), HTML, CSS and git (nodejs for developing with a local server). There is no specific prerequisites for enjoying the visualization neither for using the code, available in github.
                 <br/><br/>
-                To be more precise, in the following paragraphs first we will explain what were our data (through data abstraction), why this visualization (through task abstraction) and to conclude the reason of how we choice to present the data (idioms : visual encoding and interaction) ; thanks to that, we have been able to answer to the title question : <i>when should I book my time, when not, for these trainings</i>, which answers are our insights !
+                To be more precise, in the following paragraphs first we will explain what were our data (through data abstraction), why this visualization (through task abstraction) and to conclude the reason of how we choice to present the data (idioms : visual encoding and interaction) ; thanks to that, we have been able to answer to the title question : <i>Investments on computers and tablets on whole Colombia, but with which distribution ? Where the investments have been the highest and the lowest ?</i>, which answers are our insights !
                 <br/>
               </p>
               <p style="color:#789410;font-size:110%">What ?</p>
               <p style="color:#111111;">
-                The dataset type is <b>temporal</b> (initially, we could have thought that it was a table, but the fact is that, originally, almost all the dataset are tables, but, seaching with more precision, we can discover interesting details. For this case, the dataset is temporal because it provides a list of open data usage trainings, characterising them by their name, their objectives, their geografic range AND <b>their date</b> (we could admit that some would say - and they would be right - that this dataset could be used for other purposes which don't need the temporal data, and as a result the dataset would not be temporal). </br>The dataset availability is <b>static</b> because the dataset available on the website is not modified in real-time, so we just download the file from the website and load it on github. As the dataset was quite up-to-date (only missing the last weeks), it is probable that the data could evolve in the original website but here we will use a static data file, the one on github. After that, to separate the dataset in smaller ones, and also to get <b>derived data</b> (rate in % of training by month and by year), we process directly this file in the visualization with d3.<br/><br/>
+                Let's precise first that here one derived dataset is used at the end in the visualization. It has been created from the original dataset thanks to a custom Java program (available in the repository). The final dataset type is <b>tree</b> (initially, it was a <b>table</b> - originally, almost all the dataset are tables, but, after processing the data for creating new datasets (and new files) we obtained two network datasets. For this case, the dataset was a good cantidate for network dataset because it contains both categorical and quantitative data, where the categorical attributes have hierarchy (departments and cities) and the quantitative attributes "follow" this hierarchy, meaning that the sum of the quantitative attribute for cities of a department is the value of the quantitative attribute for this department.</br>The dataset availability is <b>static</b> because the dataset available on the website is not modified in real-time, so we just download the file from the website and load it on github. So for this case, we had to process the data, so we have done a <b>derivation task</b> to get <b>the derived data</b>.<br/><br/>
 
-                Before processing the data in d3, the <b>items</b> represent each one a training, which have the following characteristics: name, description, audience, date, zone, number of people present and duration. These characteristics are the <b>attributes</b>.<br/><br/>
+                Before processing the data, the <b>items</b> represent, each one, one investment, which has the following characteristics: id, period, city, department, value of the investment (there were other data but we decide to quit them because there were not revelant for our visualization). These characteristics are the <b>attributes</b>. Note that in Excel/Libre Office we first group and sum the investments by city, allowing the fusion of the values for a same city on different periods. So we will no longer talk about period afterwards.<br/><br/>
 
-                The <b>attributes</b> name, description, audience and zone are categorical. Besides, we won't use them. The attributes number of people present and duration are ordered and quantitative (because of being number quantities) and sequential (there is no separation between two groups so no diverging). We won't use them neither. About the attribute date, we can consider that originally it is ordered and quantitative and sequential because it is composed of a complete date (year, month, day, hours and minutes).<br/><br/>
+                The <b>attributes</b> id, city, department are categorical. The <b>attribute</b> value is ordered, quantitative and sequential.<br/><br/>
 
-                After processing the data, we obtain <b>new items</b>: each item is a month - the months represent cyclic data here because we used them over several years and grouped them together - for the years, there are all separated (or a year, for the other derivation). About the attribute, we have new attributes: for one derivation the monthRate (the promedian rate (in %) of trainings, for a month, considering the three years) and for the other one the yearRate (the rate (in %) of trainings, for a year). Both monthRate and yearRate are ordered and quantitative and sequential attributes, because of being number quantities (%) with no separation between two groups so no diverging.<br/><br/>
+                After processing the data, we could say that we obtain <b>more or less the same items</b> : each item is still an investment but it represent the sum of investments for a deparment or a city. About the attributes, the id is the key value of each item. Each item has other attributes : name (still categorical, representing the city or the department), department (even repeated if the name was the department) which is still categorical and an attribute value which is ordered, quantitative and sequential - it represents the sum of the investments in the city or the department and the last attribute is children which allow to represent the hierarchy between item: the "department items" have as children the cities of the department and the "city items" have no children (empty). We can't forget the root item : Colombia! (the country, which contains all the deparments).<br/><br/>
             </p>
             <p style="color:#789410;font-size:110%">Why ?</p>
             <p style="color:#111111;">
-              Before talking about the wanted tasks, we have to mention that we did two derivation tasks. We process the data and transform the items which were representing one training into new items. Now each item is a month (or a year, for the other dataset where we performed the other derivation). For the items Month the attribute is the promedian rate (in %) of trainings, for a month, considering the three years given in the original data. For the items Year the attribute is the rate (in %) of trainings, for a year. These derivation tasks, in terms of Tamara were <b>Derive (action) Feature (target) (from trainings to temporal data)</b>.<br/><br/>
+              Before talking about the wanted tasks, we have to mention that we did derivation tasks (as explained before that). We processed the data and obtained a new file where data are a tree, with this structure: <i>{"name": "Colombia", "children": [{"name": "AMAZONAS", "value": 0,"children": [{"name": "LA CHORRERA", "value": 156217422.2}, ....], {"name": "VALLE DEL CAUCA",</i>. These derivation tasks, in terms of Tamara were <b>Derive (action) Feature (target) on the items with all their attributes (derivation for getting new items and derivation for getting hierarchy).</b>.<br/><br/>
 
-              Which tasks do we want to be able to perform here ? <br/><br/>
+              Which tasks do we want to be able to perform here?<br/><br/>
 
-              As said in the title, first, the primary task we want to perform here is <b>to show how much are given these trainings during a year (month by month).</b>
-              In terms of Tamara, at a high-level, the action is <b>Present</b> and the target is <b>Distribution</b> : we want to show to the audience a summary month by month of the rate of trainings which have been given. To be more precise, at a low-level that the action is <b>Summarize</b> and the target is <b>Distribution</b>. For this behaviour we use only the dataset <i>rate under total (in %) by month</i>.
+              As said in the title, first, the primary task we want to perform here is <b>to show the global distribution of the investments on computers in Colombia.</b>
+              In terms of Tamara, the action is <b>Summarize</b> and the target is <b>Distribution</b>.
               <br/><br/>
-              But, also as said in the title, another primary task would be <b>to show when are mostly given these trainings during a year (month by month) and when not.</b>
-              In terms of Tamara, at a high-level, the action is <b>Discover</b> and the target is <b>Extremes</b> : we want to allow the audience to know when they should book time for going to these trainings. To be more precise, at a low-level that the action is <b>Locate</b> and the target is <b>Extremes</b>.
-              They are <b>our two first insights : you should book time for going to these trainings in April or September. But on the contrary we should definitely not plan to assist to this kind of training in January or December.</b> For this behaviour we use only the dataset <i>rate under total (in %) by month</i>.
-              <br/><br/>
+              But, also as said in the title, another primary task would be <b>to know where the investments have been the highest or the lowest ones.</b> In terms of Tamara, the task here is to <b>Identify</b> <b>Extremes</b>.
 
-              One secondary task is to check if we are "on-time" for these capacitations. By saying that, we mean that, even if this initiative of organising trainings about open data usage is quite recent (since 2016) maybe we have missed the right moment or maybe not! In terms of Tamara, at a high-level, this task is <b>Discover (action) Trends (target)</b> and at a low-level that the action is <b>Identify</b> and the target is <b>Trends</b>. We can perform this task by using the interaction "Switch to year". Then we can perform this task (so using only the dataset <i>rate under total (in %) by year</i>.)
-              <br/><br/>
-              As a result, <b>our third insight : the global trend over years is a huge decrease of the number of training given about this subject. Most of them (almost 60%) have been given in 2016. So it seems that we missed the right moment!</b>
+              So thanks to these tasks we have been able to get some <b>insights</b>. The first one is that, seeing the global distribution, we can observe that <b>the first 11 departments or divisions (under 33 in this dataset) represent more than the half of the investments in the whole country.</b> It is easy to see it looking horizontally until the half of the graph. The second one is that,<b>Antioquia and Valle del Cauca are the departments where the investments have been the highest whereas that Guainía and Vaupes are the departments where the investments have been the lowest.</b>.<br/><br/>
+
+              One secondary task could be to see with more details each department, seeing the investments in each city. In terms of Tamara, at a low-level the action is <b>Explore</b> and the target is <b>Distribution</b> (the one inside a department). We can perform this task by clicking on a department and seeing the value for each city. As a result, for this task, <b>one insight is that in Nariño the highest investment has not been in Pasto but in San Andres de Tumaco, whereas Pasto is the capital.</b> If we look to other departments, it is more typical that in the capital of the departments the investments have been the highest one of the deparment.
               <br/><br/>
             </p>
             <p style="color:#789410;font-size:110%">How ?</p>
             <p style="color:#111111;">
-              We choose <b>line chart</b> for this visualization.<br/><br/>
-              First, we have to say that for the two datasets, in the x axis, we have the considered time (month, or year). Both are ordered and quantitative. Month is cyclic whereas year is sequential. In the y axis we have the rate in % of training by month (promedian rate) or by year. Both are ordered, quantitative and sequential.<br/><br/>
-              As a result, about the visual encoding, the <b>mark</b> we choose is <b>line</b> which represents the rate in % of training over the time (months or years) and the <b>channel</b> is <b>vertical position</b> because the attribute rate is ordered quantitative; it can be easily explain because this channel is the most <b>effective</b> for the ordered attributes (which should always use magnitude channels, in theory, so from this point of view, we use a good and expressive type).</p>
-              Note that we use a second mark which are the <b>points</b>, for each exact value we had, to emphasise them and allow to get more details. 
-              <br/>About the view for secondary task where we used the same marks and channels because the items and the attributes shared the same characteristics than the one of the first view/main task.
-              </br></br>
-              As in y axis we have the rate of training which is quantitative ordered sequential, in both views, we choose to <b>express</b> the vertical position - it combines well with ordered attributes and with our principal tasks (summarize distribution, locate extremes) and secondary task (identify trends). And as in x axis we have the considered time period which is quantitative ordered, in both views, we choose to <b>express</b> also the position.
+              We choose <b>tree</b> for this visualization.<br/><br/>
+              First, we have to say that there is no visual axis here.<br/><br/>
+              About the visual encoding, the <b>mark</b> we choose is <b>area (rectangular shapes)</b> for the items (both "department" and "city" items - there would be no difference here about this HOW part for the two kinds of items).. About the <b>channel</b> for the items, it is <b>area (2D size)</b>; it can be easily explain because it is a channel which are in the most <b>effective</b> for the ordered attributes (here the area represents the value of the investments).</br></br>
+              We choose to <b>separate and order</b> the items as the idea was to be able to identify the highest and the lowest investments and also to see the global distribution. It combines well with our ordered attribute (group/thematic) and with these principal tasks.
               <br/><br/>
-              Then about the interaction, first we decide to provide to the user two interactions with two buttons. Both buttons allow to switch between the two views, which permit to perform the main or the secondary tasks (and to get back!). It’s a <b>Change manipulation</b>. Then, we used a <b>Superimpose</b> putting the points we have on the lines. And, to conclude, with these points we also provide a <b>“Select” manipulation</b>, with a mouseover which allows to give more detailed information about the current point.</p>
-            </p>            
+              Then about the interactions, first we decide to provide to the user one interaction clicking on the department. It allows him to see the detail for one deparment: it is a kind of <b>Embed</b> because it "opens" the detailed view. To conclude, note that we also provide an interaction for going back to the global distribution view (clicking on the banner).
+            </p>     
       </div>
     </div>
 
@@ -393,9 +388,9 @@
         <p><a href="">Link of this page - for sharing for example</a></p>
       </header>
       <section>
-        <p style="font-size:90%">The data used come from the Colombian open data website - direct link <a href="https://www.datos.gov.co/api/views/nmxb-8juf/rows.csv?accessType=DOWNLOAD&bom=true&format=true">here</a></p>
+        <p style="font-size:90%">The data used come from the Colombian open data website - direct link <a href="https://www.datos.gov.co/api/views/pyqj-s96k/rows.csv?accessType=DOWNLOAD">here</a></p>
         <p style="font-size:90%">This project is under <a href="https://opensource.org/licenses/MIT">MIT license.</a></p>
-        <p class="view"><a href="https://github.com/pierreraimbaud/CapacitacionesColombia">Project URL on GitHub <small>pierreraimbaud/CapacitacionesColombia</small></a>   -   <a style="font-size:90%" href="https://github.com/pierreraimbaud/CapacitacionesColombia#markdown">Markdown link</a></p>        
+        <p class="view"><a href="https://github.com/pierreraimbaud/InvestmentsComputerColombia">Project URL on GitHub <small>pierreraimbaud/InvestmentsComputerColombia</small></a>   -   <a style="font-size:90%" href="https://github.com/pierreraimbaud/InvestmentsComputerColombia#markdown">Markdown link</a></p>        
       </section>
       <footer>
         <p>Link to the author GitHub profile: this project is maintained by <a href="https://github.com/pierreraimbaud">pierreraimbaud</a></p>
