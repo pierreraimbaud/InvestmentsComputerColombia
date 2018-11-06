@@ -4,11 +4,11 @@ Pierre Raimbaud : https://github.com/pierreraimbaud, GitHub project link : https
 This project is under MIT license (applied to the repository).<br/><br/>
 <img src="/TreeMapInvestComputColombia.png" alt="TreeMapInvestComputColombia"><br/>
 <p style="color:#111111;">
-This visualization uses data from datos.gov.co. The principal objective here is to show or discover some interesting insights about this data, knowing that the principal question here is:<br/><b>Could we know more about the thematics of the festivities in Valle del Cauca, Colombia and their relationships ?</b>
-<br/><br/>
-The other objetives are more academic: to use d3, to represent a network in a visualization, to publish the web page on GithubPages etc. The technologies used are d3 (javascript), HTML, CSS, Java (for processing the csv file into a json file) and git (nodejs for developing with a local server). There is no specific prerequisites for enjoying the visualization neither for using the code, available in github.
-<br/><br/>
-To be more precise, in the following paragraphs first we will explain what were our data (through data abstraction), why this visualization (through task abstraction) and to conclude the reason of how we choice to present the data (idioms : visual encoding and interaction) ; thanks to that, we have been able to answer to the title question : <i>Festivities in Valle del Cauca, Colombia : which thematics should I expect for an event? And which are the relationships between them?</i>. Our answers will be the insights of this visualization!
+This visualization uses data from datos.gov.co The principal objective here is to show or discover some interesting insights about this data, knowing that the principal question here is:<br/><b>Could I know, the global distribution of the investments ? Could I know where the investments where the highest and the lowest?</b>
+                <br/><br/>
+                The other objetives are more academic: to use d3, to publish the web page on GithubPages etc. The technologies used are d3 (javascript), HTML, CSS and git (nodejs for developing with a local server). There is no specific prerequisites for enjoying the visualization neither for using the code, available in github.
+                <br/><br/>
+                To be more precise, in the following paragraphs first we will explain what were our data (through data abstraction), why this visualization (through task abstraction) and to conclude the reason of how we choice to present the data (idioms : visual encoding and interaction) ; thanks to that, we have been able to answer to the title question : <i>Investments on computers and tablets on whole Colombia, but with which distribution ? Where the investments have been the highest and the lowest ?</i>, which answers are our insights !
 <br/>
 </p>
             <h2>What, why and how ? Understanding this visualization thanks to abstraction</h2>
