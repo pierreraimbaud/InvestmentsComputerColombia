@@ -1,5 +1,5 @@
 <h2>Investments (in Colombian pesos) for education, on computers, in each department and city.</h2>
-### Author
+<h2>Author</h2>
 Pierre Raimbaud : https://github.com/pierreraimbaud, GitHub project link : https://github.com/pierreraimbaud/InvestmentsComputerColombia and Projet page : https://pierreraimbaud.github.io/InvestmentsComputerColombia/<br/><br/>
 This project is under MIT license (applied to the repository).<br/><br/>
 <img src="/TreeMapInvestComputColombia.png" alt="TreeMapInvestComputColombia"><br/>
