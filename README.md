@@ -2,7 +2,7 @@
 ### Author
 Pierre Raimbaud : https://github.com/pierreraimbaud, GitHub project link : https://github.com/pierreraimbaud/InvestmentsComputerColombia and Projet page : https://pierreraimbaud.github.io/InvestmentsComputerColombia/<br/><br/>
 This project is under MIT license (applied to the repository).<br/><br/>
-<img src="/networkThematicsEventsValle.png" alt="TemasFiestasValleCauca"><br/>
+<img src="/TreeMapInvestComputColombia.png" alt="TreeMapInvestComputColombia"><br/>
 <p style="color:#111111;">
 This visualization uses data from datos.gov.co. The principal objective here is to show or discover some interesting insights about this data, knowing that the principal question here is:<br/><b>Could we know more about the thematics of the festivities in Valle del Cauca, Colombia and their relationships ?</b>
 <br/><br/>
