@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+    <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+
+    <style>
+
+      .toolTip {
+        position: absolute;
+        display: none;
+        min-width: 80px;
+        height: auto;
+        background: none repeat scroll 0 0 #ffffff;
+        border: 1px solid #6F257F;
+        padding: 14px;
+        text-align: center;
+      }
+
+      h1 {
+        font-size : 130%;
+        color:#696969;
+        text-align: center;
+      }
+
+      h2 {
+        font-size : 110%;
+        color:#489450;
+      }
+
+      .xaxis text {
+        color:#676779;
+      }
+
+      .yaxis text {
+        color:#676779;
+      }
+
+      #svgcontainer1 {
+        display: inline-block;
+        float: left;
+      }
+
+      #svgcontainer2 {
+        display: inline-block;
+        float: right;
+      }
+
+      #explcontainer {
+        display: inline-block;
+      }
+
+
+rect.cell {
+  fill: none;
+  stroke: #ddd;
+  stroke-width: 2px;
+}
+
+.links line {
+  stroke: #999;
+  stroke-opacity: 0.7;
+}
+
+.nodes circle {
+  fill: #d62333;
+  stroke: #fff;
+  stroke-width: 2px;
+}
+    </style>
+    
+    <h1>Title</h1>
+
+    <div id="wrapper">
+
+      <div id = "svgcontainer1">
+  <h2>Dataset</h2>
+            <p style="color:#789410;font-size:85%">text for details</p>
+            <div><button id = "swToYearButton" style="padding: 5px 10px; text-align: center;font-size: 80%;margin: 2px 1px;">Switch to year</button></div>
+      </div>
+
+      <div id = "svgcontainer2">
+      </div>
+
+       <div id = "explcontainer">
+            <h2>What, why and how ? Understanding this visualization thanks to abstraction</h2>
+              <p style="color:#111111;">
+                This visualization uses data from datos.gov.co The principal objective here is to show or discover some interesting insights about this data, knowing that the principal question here is:<br/><b>Could I know, thanks to the visualization, when should I book my time for applying to a training about open data ? When not? </b>
+                <br/><br/>
+                The other objetives are more academic: to use d3, to publish the web page on GithubPages etc. The technologies used are d3 (javascript), HTML, CSS and git (nodejs for developing with a local server). There is no specific prerequisites for enjoying the visualization neither for using the code, available in github.
+                <br/><br/>
+                To be more precise, in the following paragraphs first we will explain what were our data (through data abstraction), why this visualization (through task abstraction) and to conclude the reason of how we choice to present the data (idioms : visual encoding and interaction) ; thanks to that, we have been able to answer to the title question : <i>when should I book my time, when not, for these trainings</i>, which answers are our insights !
+                <br/>
+              </p>
+              <p style="color:#789410;font-size:110%">What ?</p>
+              <p style="color:#111111;">
+                The dataset type is <b>temporal</b> (initially, we could have thought that it was a table, but the fact is that, originally, almost all the dataset are tables, but, seaching with more precision, we can discover interesting details. For this case, the dataset is temporal because it provides a list of open data usage trainings, characterising them by their name, their objectives, their geografic range AND <b>their date</b> (we could admit that some would say - and they would be right - that this dataset could be used for other purposes which don't need the temporal data, and as a result the dataset would not be temporal). </br>The dataset availability is <b>static</b> because the dataset available on the website is not modified in real-time, so we just download the file from the website and load it on github. As the dataset was quite up-to-date (only missing the last weeks), it is probable that the data could evolve in the original website but here we will use a static data file, the one on github. After that, to separate the dataset in smaller ones, and also to get <b>derived data</b> (rate in % of training by month and by year), we process directly this file in the visualization with d3.<br/><br/>
+
+                Before processing the data in d3, the <b>items</b> represent each one a training, which have the following characteristics: name, description, audience, date, zone, number of people present and duration. These characteristics are the <b>attributes</b>.<br/><br/>
+
+                The <b>attributes</b> name, description, audience and zone are categorical. Besides, we won't use them. The attributes number of people present and duration are ordered and quantitative (because of being number quantities) and sequential (there is no separation between two groups so no diverging). We won't use them neither. About the attribute date, we can consider that originally it is ordered and quantitative and sequential because it is composed of a complete date (year, month, day, hours and minutes).<br/><br/>
+
+                After processing the data, we obtain <b>new items</b>: each item is a month - the months represent cyclic data here because we used them over several years and grouped them together - for the years, there are all separated (or a year, for the other derivation). About the attribute, we have new attributes: for one derivation the monthRate (the promedian rate (in %) of trainings, for a month, considering the three years) and for the other one the yearRate (the rate (in %) of trainings, for a year). Both monthRate and yearRate are ordered and quantitative and sequential attributes, because of being number quantities (%) with no separation between two groups so no diverging.<br/><br/>
+            </p>
+            <p style="color:#789410;font-size:110%">Why ?</p>
+            <p style="color:#111111;">
+              Before talking about the wanted tasks, we have to mention that we did two derivation tasks. We process the data and transform the items which were representing one training into new items. Now each item is a month (or a year, for the other dataset where we performed the other derivation). For the items Month the attribute is the promedian rate (in %) of trainings, for a month, considering the three years given in the original data. For the items Year the attribute is the rate (in %) of trainings, for a year. These derivation tasks, in terms of Tamara were <b>Derive (action) Feature (target) (from trainings to temporal data)</b>.<br/><br/>
+
+              Which tasks do we want to be able to perform here ? <br/><br/>
+
+              As said in the title, first, the primary task we want to perform here is <b>to show how much are given these trainings during a year (month by month).</b>
+              In terms of Tamara, at a high-level, the action is <b>Present</b> and the target is <b>Distribution</b> : we want to show to the audience a summary month by month of the rate of trainings which have been given. To be more precise, at a low-level that the action is <b>Summarize</b> and the target is <b>Distribution</b>. For this behaviour we use only the dataset <i>rate under total (in %) by month</i>.
+              <br/><br/>
+              But, also as said in the title, another primary task would be <b>to show when are mostly given these trainings during a year (month by month) and when not.</b>
+              In terms of Tamara, at a high-level, the action is <b>Discover</b> and the target is <b>Extremes</b> : we want to allow the audience to know when they should book time for going to these trainings. To be more precise, at a low-level that the action is <b>Locate</b> and the target is <b>Extremes</b>.
+              They are <b>our two first insights : you should book time for going to these trainings in April or September. But on the contrary we should definitely not plan to assist to this kind of training in January or December.</b> For this behaviour we use only the dataset <i>rate under total (in %) by month</i>.
+              <br/><br/>
+
+              One secondary task is to check if we are "on-time" for these capacitations. By saying that, we mean that, even if this initiative of organising trainings about open data usage is quite recent (since 2016) maybe we have missed the right moment or maybe not! In terms of Tamara, at a high-level, this task is <b>Discover (action) Trends (target)</b> and at a low-level that the action is <b>Identify</b> and the target is <b>Trends</b>. We can perform this task by using the interaction "Switch to year". Then we can perform this task (so using only the dataset <i>rate under total (in %) by year</i>.)
+              <br/><br/>
+              As a result, <b>our third insight : the global trend over years is a huge decrease of the number of training given about this subject. Most of them (almost 60%) have been given in 2016. So it seems that we missed the right moment!</b>
+              <br/><br/>
+            </p>
+            <p style="color:#789410;font-size:110%">How ?</p>
+            <p style="color:#111111;">
+              We choose <b>line chart</b> for this visualization.<br/><br/>
+              First, we have to say that for the two datasets, in the x axis, we have the considered time (month, or year). Both are ordered and quantitative. Month is cyclic whereas year is sequential. In the y axis we have the rate in % of training by month (promedian rate) or by year. Both are ordered, quantitative and sequential.<br/><br/>
+              As a result, about the visual encoding, the <b>mark</b> we choose is <b>line</b> which represents the rate in % of training over the time (months or years) and the <b>channel</b> is <b>vertical position</b> because the attribute rate is ordered quantitative; it can be easily explain because this channel is the most <b>effective</b> for the ordered attributes (which should always use magnitude channels, in theory, so from this point of view, we use a good and expressive type).</p>
+              Note that we use a second mark which are the <b>points</b>, for each exact value we had, to emphasise them and allow to get more details. 
+              <br/>About the view for secondary task where we used the same marks and channels because the items and the attributes shared the same characteristics than the one of the first view/main task.
+              </br></br>
+              As in y axis we have the rate of training which is quantitative ordered sequential, in both views, we choose to <b>express</b> the vertical position - it combines well with ordered attributes and with our principal tasks (summarize distribution, locate extremes) and secondary task (identify trends). And as in x axis we have the considered time period which is quantitative ordered, in both views, we choose to <b>express</b> also the position.
+              <br/><br/>
+              Then about the interaction, first we decide to provide to the user two interactions with two buttons. Both buttons allow to switch between the two views, which permit to perform the main or the secondary tasks (and to get back!). It’s a <b>Change manipulation</b>. Then, we used a <b>Superimpose</b> putting the points we have on the lines. And, to conclude, with these points we also provide a <b>“Select” manipulation</b>, with a mouseover which allows to give more detailed information about the current point.</p>
+            </p>            
+      </div>
+    </div>
+
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+<style>
+  #chart {
+    max-width: 100%;
+    overflow:auto;
+  }
+  text {
+    pointer-events: none;
+  }
+  .grandparent text {
+    font-weight: bold;
+  }
+  rect {
+    stroke: #fff;
+    stroke-width: 1px;
+  }
+  rect.parent,
+  .grandparent rect {
+    stroke-width: 3px;
+  }
+  .grandparent:hover rect {
+    fill: grey;
+  }
+  .children rect.parent,
+  .grandparent rect {
+    cursor: pointer;
+  }
+  .children rect.child {
+    opacity: 0;
+  }
+  .children rect.parent {
+  }
+  .children:hover rect.child {
+    opacity: 1;
+    stroke-width: 1px;
+  }
+  .children:hover rect.parent {
+    opacity: 0;
+  }
+  .legend {
+    margin-bottom:8px !important;
+  }
+  .legend rect {
+    stroke-width: 0px;
+  }
+  .legend text {
+    text-anchor: middle;
+    pointer-events: auto;
+    font-size: 13px;
+    font-family: sans-serif;
+    fill: black;
+  }
+  .form-group {
+      text-align:left;
+  }
+  .textdiv {
+      font-family: "Open Sans",Helvetica,Arial,sans-serif;
+      font-size: 14px;
+      padding: 7px;
+      cursor: pointer;
+      overflow:none;
+  }
+  .textdiv .title {
+      font-size: 102%;
+      font-weight: bold;
+      margin-top: 8px;
+      font-size:11px !important;
+  }
+  .textdiv p{
+      line-height: 13px;
+      margin:0 0 4px !important;
+      padding:0px;
+      font-size:10px !important;
+  }
+</style>
+
+    <p id="chart"></p>
+
+    <script src="//d3js.org/d3.v4.min.js"></script>
+    <script>
+        /**
+         * Interactive, zoomable treemap, using D3 v4
+         *
+         * A port to D3 v4 of Jacques Jahnichen's Block, using the same budget data
+         * see: http://bl.ocks.org/JacquesJahnichen/42afd0cde7cbf72ecb81
+         *
+         * Author: Guglielmo Celata
+         * Date: sept 1st 2017
+         **/
+        var el_id = 'chart';
+        var obj = document.getElementById(el_id);
+        var divWidth = obj.offsetWidth;
+        var margin = {top: 30, right: 0, bottom: 20, left: 0},
+            width = divWidth -25,
+            height = 600 - margin.top - margin.bottom,
+            formatNumber = d3.format(","),
+            transitioning;
+        // sets x and y scale to determine size of visible boxes
+        var x = d3.scaleLinear()
+            .domain([0, width])
+            .range([0, width]);
+        var y = d3.scaleLinear()
+            .domain([0, height])
+            .range([0, height]);
+        var treemap = d3.treemap()
+                .size([width, height])
+                .paddingInner(0)
+                .round(false);
+        var svg = d3.select('#svgcontainer1').append('svg')
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.bottom + margin.top)
+            .style("margin-left", -margin.left + "px")
+            .style("margin.right", -margin.right + "px")
+            .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+                .style("shape-rendering", "crispEdges");
+        var grandparent = svg.append("g")
+                .attr("class", "grandparent");
+            grandparent.append("rect")
+                .attr("y", -margin.top)
+                .attr("width", width)
+                .attr("height", margin.top)
+                .attr("fill", '#bbbbbb');
+            grandparent.append("text")
+                .attr("x", 6)
+                .attr("y", 6 - margin.top)
+                .attr("dy", ".75em");
+        d3.json("budget-data.json", function(data) {
+            var root = d3.hierarchy(data);
+            console.log(root);
+            treemap(root
+                .sum(function (d) {
+                    return d.value;
+                })
+                .sort(function (a, b) {
+                    return b.height - a.height || b.value - a.value
+                })
+            );
+            display(root);
+            function display(d) {
+                // write text into grandparent
+                // and activate click's handler
+                grandparent
+                    .datum(d.parent)
+                    .on("click", transition)
+                    .select("text")
+                    .text(name(d));
+                // grandparent color
+                grandparent
+                    .datum(d.parent)
+                    .select("rect")
+                    .attr("fill", function () {
+                        return '#bbbbbb'
+                    });
+                var g1 = svg.insert("g", ".grandparent")
+                    .datum(d)
+                    .attr("class", "depth");
+                var g = g1.selectAll("g")
+                    .data(d.children)
+                    .enter().
+                    append("g");
+                // add class and click handler to all g's with children
+                g.filter(function (d) {
+                    return d.children;
+                })
+                    .classed("children", true)
+                    .on("click", transition);
+                g.selectAll(".child")
+                    .data(function (d) {
+                        return d.children || [d];
+                    })
+                    .enter().append("rect")
+                    .attr("class", "child")
+                    .call(rect);
+                // add title to parents
+                g.append("rect")
+                    .attr("class", "parent")
+                    .call(rect)
+                    .append("title")
+                    .text(function (d){
+                        return d.data.name;
+                    });
+                /* Adding a foreign object instead of a text object, allows for text wrapping */
+                g.append("foreignObject")
+                    .call(rect)
+                    .attr("class", "foreignobj")
+                    .append("xhtml:div")
+                    .attr("dy", ".75em")
+                    .html(function (d) {
+                        return '' +
+                            '<p class="title"> ' + d.data.name + '</p>' +
+                            '<p>' + formatNumber(d.value) + '</p>'
+                        ;
+                    })
+                    .attr("class", "textdiv"); //textdiv class allows us to style the text easily with CSS
+                function transition(d) {
+                    if (transitioning || !d) return;
+                    transitioning = true;
+                    var g2 = display(d),
+                        t1 = g1.transition().duration(650),
+                        t2 = g2.transition().duration(650);
+                    // Update the domain only after entering new elements.
+                    x.domain([d.x0, d.x1]);
+                    y.domain([d.y0, d.y1]);
+                    // Enable anti-aliasing during the transition.
+                    svg.style("shape-rendering", null);
+                    // Draw child nodes on top of parent nodes.
+                    svg.selectAll(".depth").sort(function (a, b) {
+                        return a.depth - b.depth;
+                    });
+                    // Fade-in entering text.
+                    g2.selectAll("text").style("fill-opacity", 0);
+                    g2.selectAll("foreignObject div").style("display", "none");
+                    /*added*/
+                    // Transition to the new view.
+                    t1.selectAll("text").call(text).style("fill-opacity", 0);
+                    t2.selectAll("text").call(text).style("fill-opacity", 1);
+                    t1.selectAll("rect").call(rect);
+                    t2.selectAll("rect").call(rect);
+                    /* Foreign object */
+                    t1.selectAll(".textdiv").style("display", "none");
+                    /* added */
+                    t1.selectAll(".foreignobj").call(foreign);
+                    /* added */
+                    t2.selectAll(".textdiv").style("display", "block");
+                    /* added */
+                    t2.selectAll(".foreignobj").call(foreign);
+                    /* added */
+                    // Remove the old node when the transition is finished.
+                    t1.on("end.remove", function(){
+                        this.remove();
+                        transitioning = false;
+                    });
+                }
+                return g;
+            }
+            function text(text) {
+                text.attr("x", function (d) {
+                    return x(d.x) + 6;
+                })
+                    .attr("y", function (d) {
+                        return y(d.y) + 6;
+                    });
+            }
+            function rect(rect) {
+                rect
+                    .attr("x", function (d) {
+                        return x(d.x0);
+                    })
+                    .attr("y", function (d) {
+                        return y(d.y0);
+                    })
+                    .attr("width", function (d) {
+                        return x(d.x1) - x(d.x0);
+                    })
+                    .attr("height", function (d) {
+                        return y(d.y1) - y(d.y0);
+                    })
+                    .attr("fill", function (d) {
+                        return '#bbbbbb';
+                    });
+            }
+            function foreign(foreign) { /* added */
+                foreign
+                    .attr("x", function (d) {
+                        return x(d.x0);
+                    })
+                    .attr("y", function (d) {
+                        return y(d.y0);
+                    })
+                    .attr("width", function (d) {
+                        return x(d.x1) - x(d.x0);
+                    })
+                    .attr("height", function (d) {
+                        return y(d.y1) - y(d.y0);
+                    });
+            }
+            function name(d) {
+                return breadcrumbs(d) +
+                    (d.parent
+                    ? " -  Click to zoom out"
+                    : " - Click inside square to zoom in");
+            }
+            function breadcrumbs(d) {
+                var res = "";
+                var sep = " > ";
+                d.ancestors().reverse().forEach(function(i){
+                    res += i.data.name + sep;
+                });
+                return res
+                    .split(sep)
+                    .filter(function(i){
+                        return i!== "";
+                    })
+                    .join(sep);
+            }
+        });
+   </script>
+    <div class="wrapper">
+      <header>
+        <p><a href="">Link of this page - for sharing for example</a></p>
+      </header>
+      <section>
+        <p style="font-size:90%">The data used come from the Colombian open data website - direct link <a href="https://www.datos.gov.co/api/views/nmxb-8juf/rows.csv?accessType=DOWNLOAD&bom=true&format=true">here</a></p>
+        <p style="font-size:90%">This project is under <a href="https://opensource.org/licenses/MIT">MIT license.</a></p>
+        <p class="view"><a href="https://github.com/pierreraimbaud/CapacitacionesColombia">Project URL on GitHub <small>pierreraimbaud/CapacitacionesColombia</small></a>   -   <a style="font-size:90%" href="https://github.com/pierreraimbaud/CapacitacionesColombia#markdown">Markdown link</a></p>        
+      </section>
+      <footer>
+        <p>Link to the author GitHub profile: this project is maintained by <a href="https://github.com/pierreraimbaud">pierreraimbaud</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src=""></script>
+    
+  </body>
+</html>
