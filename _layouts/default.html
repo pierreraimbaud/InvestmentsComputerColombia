@@ -13,34 +13,16 @@
 
     <style>
 
-      .toolTip {
-        position: absolute;
-        display: none;
-        min-width: 80px;
-        height: auto;
-        background: none repeat scroll 0 0 #ffffff;
-        border: 1px solid #6F257F;
-        padding: 14px;
-        text-align: center;
-      }
-
       h1 {
-        font-size : 130%;
+        font-size : 140%;
         color:#696969;
         text-align: center;
       }
 
       h2 {
-        font-size : 110%;
+        font-size : 120%;
         color:#489450;
-      }
-
-      .xaxis text {
-        color:#676779;
-      }
-
-      .yaxis text {
-        color:#676779;
+        text-align: center;
       }
 
       #svgcontainer1 {
@@ -56,37 +38,86 @@
       #explcontainer {
         display: inline-block;
       }
-
-
-rect.cell {
-  fill: none;
-  stroke: #ddd;
-  stroke-width: 2px;
-}
-
-.links line {
-  stroke: #999;
-  stroke-opacity: 0.7;
-}
-
-.nodes circle {
-  fill: #d62333;
-  stroke: #fff;
-  stroke-width: 2px;
-}
+      
+      #chart {
+        max-width: 100%;
+        overflow:auto;
+      }
+      text {
+        pointer-events: none;
+      }
+      .grandparent text {
+        font-weight: bold;
+      }
+      rect {
+        stroke: #fff;
+        stroke-width: 1px;
+      }
+      rect.parent,
+      .grandparent rect {
+        stroke-width: 3px;
+      }
+      .grandparent:hover rect {
+        fill: grey;
+      }
+      .children rect.parent,
+      .grandparent rect {
+        cursor: pointer;
+      }
+      .children rect.child {
+        opacity: 0;
+      }
+      .children rect.parent {
+      }
+      .children:hover rect.child {
+        opacity: 1;
+        stroke-width: 1px;
+      }
+      .children:hover rect.parent {
+        opacity: 0;
+      }
+      .legend {
+        margin-bottom:8px !important;
+      }
+      .legend rect {
+        stroke-width: 0px;
+      }
+      .legend text {
+        text-anchor: middle;
+        pointer-events: auto;
+        font-size: 10px;
+        font-family: sans-serif;
+        fill: black;
+      }
+      .form-group {
+          text-align:left;
+      }
+      .textdiv {
+          font-family: "Open Sans",Helvetica,Arial,sans-serif;
+          font-size: 10px;
+          padding: 1px;
+          cursor: pointer;
+          overflow:none;
+      }
+      .textdiv .title {
+          font-weight: bold;
+          margin-top: 8px;
+          font-size:10px;
+      }
+      .textdiv p{
+          line-height: 13px;
+          margin:0 0 2px !important;
+          padding:0px;
+          font-size:10px;
+      }
     </style>
     
-    <h1>Title</h1>
+    <h1>Investing on computers and tablets on whole Colombia, but with which distribution ? Where the investments have been the highest ?</h1>
 
     <div id="wrapper">
 
       <div id = "svgcontainer1">
-  <h2>Dataset</h2>
-            <p style="color:#789410;font-size:85%">text for details</p>
-            <div><button id = "swToYearButton" style="padding: 5px 10px; text-align: center;font-size: 80%;margin: 2px 1px;">Switch to year</button></div>
-      </div>
-
-      <div id = "svgcontainer2">
+        <h2>Investments in Colombian pesos, in each department and city</h2>
       </div>
 
        <div id = "explcontainer">
@@ -144,94 +175,11 @@ rect.cell {
     </div>
 
     <script src="https://d3js.org/d3.v5.min.js"></script>
-<style>
-  #chart {
-    max-width: 100%;
-    overflow:auto;
-  }
-  text {
-    pointer-events: none;
-  }
-  .grandparent text {
-    font-weight: bold;
-  }
-  rect {
-    stroke: #fff;
-    stroke-width: 1px;
-  }
-  rect.parent,
-  .grandparent rect {
-    stroke-width: 3px;
-  }
-  .grandparent:hover rect {
-    fill: grey;
-  }
-  .children rect.parent,
-  .grandparent rect {
-    cursor: pointer;
-  }
-  .children rect.child {
-    opacity: 0;
-  }
-  .children rect.parent {
-  }
-  .children:hover rect.child {
-    opacity: 1;
-    stroke-width: 1px;
-  }
-  .children:hover rect.parent {
-    opacity: 0;
-  }
-  .legend {
-    margin-bottom:8px !important;
-  }
-  .legend rect {
-    stroke-width: 0px;
-  }
-  .legend text {
-    text-anchor: middle;
-    pointer-events: auto;
-    font-size: 13px;
-    font-family: sans-serif;
-    fill: black;
-  }
-  .form-group {
-      text-align:left;
-  }
-  .textdiv {
-      font-family: "Open Sans",Helvetica,Arial,sans-serif;
-      font-size: 14px;
-      padding: 7px;
-      cursor: pointer;
-      overflow:none;
-  }
-  .textdiv .title {
-      font-size: 102%;
-      font-weight: bold;
-      margin-top: 8px;
-      font-size:11px !important;
-  }
-  .textdiv p{
-      line-height: 13px;
-      margin:0 0 4px !important;
-      padding:0px;
-      font-size:10px !important;
-  }
-</style>
 
     <p id="chart"></p>
 
     <script src="//d3js.org/d3.v4.min.js"></script>
     <script>
-        /**
-         * Interactive, zoomable treemap, using D3 v4
-         *
-         * A port to D3 v4 of Jacques Jahnichen's Block, using the same budget data
-         * see: http://bl.ocks.org/JacquesJahnichen/42afd0cde7cbf72ecb81
-         *
-         * Author: Guglielmo Celata
-         * Date: sept 1st 2017
-         **/
         var el_id = 'chart';
         var obj = document.getElementById(el_id);
         var divWidth = obj.offsetWidth;
@@ -270,7 +218,8 @@ rect.cell {
                 .attr("x", 6)
                 .attr("y", 6 - margin.top)
                 .attr("dy", ".75em");
-        d3.json("budget-data.json", function(data) {
+
+        d3.json("b-data.json", function(data) {
             var root = d3.hierarchy(data);
             console.log(root);
             treemap(root
@@ -295,7 +244,7 @@ rect.cell {
                     .datum(d.parent)
                     .select("rect")
                     .attr("fill", function () {
-                        return '#bbbbbb'
+                        return '#FFD700'
                     });
                 var g1 = svg.insert("g", ".grandparent")
                     .datum(d)
@@ -401,9 +350,7 @@ rect.cell {
                     .attr("height", function (d) {
                         return y(d.y1) - y(d.y0);
                     })
-                    .attr("fill", function (d) {
-                        return '#bbbbbb';
-                    });
+                    .attr("fill", "#cccccc")
             }
             function foreign(foreign) { /* added */
                 foreign
